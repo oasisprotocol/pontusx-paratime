@@ -1,0 +1,43 @@
+# NOTE: This name appears in GitHub's Checks API and in workflow's status badge.
+name: ci-lint
+
+# Trigger the workflow when:
+on:
+  # A push occurs to one of the matched branches.
+  push:
+    branches:
+      - main
+      - stable/*
+      - rc/*
+  # Or when a pull request event occurs for a pull request against one of the
+  # matched branches.
+  pull_request:
+    branches:
+      - main
+      - stable/*
+      - rc/*
+
+jobs:
+
+  lint-rust:
+    # NOTE: This name appears in GitHub's Checks API.
+    name: lint-rust
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./runtime
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        run: rustup show
+
+      - name: Install protoc
+        run: sudo apt install -y protobuf-compiler
+
+      - name: Clippy check
+        run: cargo clippy --all-features --locked -- -D warnings -D clippy::dbg_macro
+
+      - name: Formatting check
+        run: cargo fmt -- --check

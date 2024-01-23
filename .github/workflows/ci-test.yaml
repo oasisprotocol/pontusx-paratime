@@ -1,0 +1,60 @@
+name: ci-test
+
+on:
+  push:
+    branches:
+      - main
+      - stable/*
+      - rc/*
+  pull_request:
+    branches:
+      - main
+      - stable/*
+      - rc/*
+
+env:
+  OASIS_UNSAFE_SKIP_AVR_VERIFY: "1"
+  OASIS_UNSAFE_KM_POLICY_KEYS: "1"
+  OASIS_UNSAFE_ALLOW_DEBUG_ENCLAVES: "1"
+
+jobs:
+  test-rust:
+    name: test-rust
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./runtime
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        run: rustup show
+
+      - name: Install protoc
+        run: sudo apt install -y protobuf-compiler
+
+      - name: Build
+        run: cargo build --release --locked
+
+  test-rust-sgx:
+    name: test-rust-sgx
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./runtime
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # gcc-multilib is required for bindgen to work for SGX.
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install gcc-multilib
+
+      - name: Set up Rust
+        run: rustup show
+
+      - name: Check SGX buildability
+        run: cargo check --locked --release --target x86_64-fortanix-unknown-sgx
