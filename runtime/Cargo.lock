@@ -2548,6 +2548,7 @@ dependencies = [
 name = "pontusx-paratime"
 version = "0.0.1-testnet"
 dependencies = [
+ "hex",
  "keymanager",
  "oasis-runtime-sdk",
  "oasis-runtime-sdk-evm",

@@ -10,13 +10,16 @@ use oasis_runtime_sdk::{
     core::common::crypto::signature::PublicKey,
     keymanager::TrustedPolicySigners,
     modules,
-    types::token::{BaseUnits, Denomination},
+    types::{address::Address, token::Denomination},
     Module, Version,
 };
 use once_cell::unsync::Lazy;
 
 /// Configuration of the various modules.
 pub struct Config;
+
+/// The total supply of the native denomination token.
+const NATIVE_TOKEN_SUPPLY: u128 = 100_000_000 * 1_000_000_000_000_000_000;
 
 /// Determine whether the build is for Testnet.
 ///
@@ -30,33 +33,48 @@ const fn is_testnet() -> bool {
 const fn chain_id() -> u64 {
     if option_env!("OASIS_UNSAFE_USE_LOCALNET_CHAINID").is_some() {
         // Localnet.
-        0x0000 //TODO
+        0x7ec7
     } else if is_testnet() {
         // Testnet.
-        0x0000 // TODO
+        0x7ec8
     } else {
         // Mainnet.
-        0x0000 // TODO
+        panic!("runtime is not yet deployable on mainnet");
+        //0x7ec9
     }
 }
 
 /// Determine state version on whether the build is for Testnet or Mainnet.
 const fn state_version() -> u32 {
-    #[allow(clippy::if_same_then_else)]
     if is_testnet() {
         // Testnet.
         1
     } else {
         // Mainnet.
-        1
+        panic!("runtime is not yet deployable on mainnet");
+    }
+}
+
+/// Determine the consensus denomination used by the runtime, depending on
+/// whether the build is for Testner or Mainnet.
+fn consensus_denomination() -> Denomination {
+    if is_testnet() {
+        "TEST".parse().unwrap()
+    } else {
+        "ROSE".parse().unwrap()
     }
 }
 
 impl modules::core::Config for Config {
     /// Default local minimum gas price configuration that is used in case no overrides are set in
     /// local per-node configuration.
-    const DEFAULT_LOCAL_MIN_GAS_PRICE: Lazy<BTreeMap<Denomination, u128>> =
-        Lazy::new(|| [(Denomination::NATIVE, 100_000_000_000)].into());
+    const DEFAULT_LOCAL_MIN_GAS_PRICE: Lazy<BTreeMap<Denomination, u128>> = Lazy::new(|| {
+        [
+            (Denomination::NATIVE, 100_000_000_000),
+            (consensus_denomination(), 100_000_000_000),
+        ]
+        .into()
+    });
 
     /// Methods which are exempt from minimum gas price requirements.
     const MIN_GAS_PRICE_EXEMPT_METHODS: Lazy<BTreeSet<&'static str>> =
@@ -109,8 +127,6 @@ impl sdk::Runtime for Runtime {
         modules::consensus::Module,
         // Consensus layer accounts.
         modules::consensus_accounts::Module<modules::accounts::Module, modules::consensus::Module>,
-        // Rewards.
-        modules::rewards::Module<modules::accounts::Module>,
         // EVM.
         module_evm::Module<Config>,
     );
@@ -159,14 +175,19 @@ impl sdk::Runtime for Runtime {
         (
             modules::core::Genesis {
                 parameters: modules::core::Parameters {
-                    min_gas_price: { BTreeMap::from([(Denomination::NATIVE, 100_000_000_000)]) },
+                    min_gas_price: {
+                        BTreeMap::from([
+                            (Denomination::NATIVE, 100_000_000_000),
+                            (consensus_denomination(), 100_000_000_000),
+                        ])
+                    },
                     dynamic_min_gas_price: modules::core::DynamicMinGasPrice {
                         enabled: true,
                         target_block_gas_usage_percentage: 50,
                         min_price_max_change_denominator: 8,
                     },
                     max_batch_gas: 15_000_000,
-                    max_tx_size: 300 * 1024,
+                    max_tx_size: 128 * 1024,
                     max_tx_signers: 1,
                     max_multisig_signers: 8,
                     gas_costs: modules::core::GasCosts {
@@ -181,23 +202,36 @@ impl sdk::Runtime for Runtime {
                 parameters: modules::accounts::Parameters {
                     gas_costs: modules::accounts::GasCosts { tx_transfer: 1_000 },
                     denomination_infos: {
-                        BTreeMap::from([(
-                            Denomination::NATIVE,
-                            modules::accounts::types::DenominationInfo {
-                                // Consistent with EVM ecosystem.
-                                decimals: 18,
-                            },
-                        )])
+                        BTreeMap::from([
+                            (
+                                Denomination::NATIVE,
+                                modules::accounts::types::DenominationInfo {
+                                    // Consistent with EVM ecosystem.
+                                    decimals: 18,
+                                },
+                            ),
+                            (
+                                consensus_denomination(),
+                                modules::accounts::types::DenominationInfo { decimals: 18 },
+                            ),
+                        ])
                     },
                     ..Default::default()
                 },
+                balances: BTreeMap::from([(
+                    Address::from_eth(
+                        &hex::decode("24D68bFBA0fB06ccFfD21dC3a5c0B65207Bd479a").unwrap(),
+                    ),
+                    BTreeMap::from([(Denomination::NATIVE, NATIVE_TOKEN_SUPPLY)]),
+                )]),
+                total_supplies: BTreeMap::from([(Denomination::NATIVE, NATIVE_TOKEN_SUPPLY)]),
                 ..Default::default()
             },
             modules::consensus::Genesis {
                 parameters: modules::consensus::Parameters {
                     gas_costs: modules::consensus::GasCosts { round_root: 10_000 },
                     // Consensus layer denomination is the native denomination of this runtime.
-                    consensus_denomination: Denomination::NATIVE,
+                    consensus_denomination: consensus_denomination(),
                     // Scale to 18 decimal places as this is what is expected in the EVM ecosystem.
                     consensus_scaling_factor: 1_000_000_000,
                     // Minimum delegation amount that matches the consensus layer.
@@ -219,18 +253,6 @@ impl sdk::Runtime for Runtime {
                     disable_undelegate: false,
                     disable_deposit: false,
                     disable_withdraw: false,
-                },
-            },
-            modules::rewards::Genesis {
-                parameters: modules::rewards::Parameters {
-                    schedule: modules::rewards::types::RewardSchedule {
-                        steps: vec![modules::rewards::types::RewardStep {
-                            until: 27_500,
-                            amount: BaseUnits::new(3_000_000_000_000_000_000, Denomination::NATIVE),
-                        }],
-                    },
-                    participation_threshold_numerator: 3,
-                    participation_threshold_denominator: 4,
                 },
             },
             module_evm::Genesis {
@@ -255,9 +277,7 @@ impl sdk::Runtime for Runtime {
         modules::consensus_accounts::Module::<modules::accounts::Module, modules::consensus::Module>::set_params(
             genesis.3.parameters,
         );
-        // Rewards.
-        modules::rewards::Module::<modules::accounts::Module>::set_params(genesis.4.parameters);
         // EVM.
-        module_evm::Module::<Config>::set_params(genesis.5.parameters);
+        module_evm::Module::<Config>::set_params(genesis.4.parameters);
     }
 }
