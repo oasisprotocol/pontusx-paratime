@@ -1,6 +1,6 @@
 [package]
 name = "pontusx-paratime"
-version = "0.0.1-testnet"
+version = "0.0.1-devnet"
 authors = ["deltaDAO <contact@delta-dao.com>"]
 edition = "2021"
 license = "Apache-2.0"
@@ -9,6 +9,9 @@ license = "Apache-2.0"
 runtime-id = "000000000000000000000000000000000000000000000000b2406b4af4e630fe"
 
 [package.metadata.orc.test]
+runtime-id = "00000000000000000000000000000000000000000000000004a6f9071c007069"
+
+[package.metadata.orc.devnet]
 runtime-id = "0000000000000000000000000000000000000000000000004febe52eb412b421"
 
 [package.metadata.fortanix-sgx]
@@ -27,6 +30,7 @@ oasis-runtime-sdk = { git = "https://github.com/oasisprotocol/oasis-sdk", tag = 
 # Third party.
 hex = "~0.4"
 once_cell = "1.8.0"
+const-str = { version = "0.5.7", features = ["std"] }
 
 [profile.release]
 codegen-units = 1
