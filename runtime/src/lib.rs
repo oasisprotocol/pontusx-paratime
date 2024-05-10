@@ -174,8 +174,8 @@ impl sdk::Runtime for Runtime {
         } else if is_testnet() {
             // Testnet.
             Some(TrustRoot {
-                height: 21028355,
-                hash: "be3948aa7666bf42f1ac3dc23d0a8e8c2cba7768a914352c9239f93b7330a177".into(),
+                height: 21122646,
+                hash: "0ed6ad8bf11176d82b3f3b9c266aa63d9813c11d8add7a696f3b22b166de6549".into(),
                 runtime_id: "00000000000000000000000000000000000000000000000004a6f9071c007069"
                     .into(),
                 chain_context: "0b91b8e4e44b2003a7c5e23ddadb5e14ef5345c0ebcb3ddcae07fa2f244cab76"
@@ -216,6 +216,7 @@ impl sdk::Runtime for Runtime {
                     max_multisig_signers: 8,
                     gas_costs: modules::core::GasCosts {
                         tx_byte: 1,
+                        storage_byte: 0,
                         auth_signature: 1_000,
                         auth_multisig_signer: 1_000,
                         callformat_x25519_deoxysii: 10_000,
