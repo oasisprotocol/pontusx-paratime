@@ -32,7 +32,7 @@ jobs:
         run: |
           go install github.com/oasisprotocol/oasis-sdk/tools/orc@latest
           pushd runtime
-          orc init ${RUNTIME_EXECUTABLE} --output ../localnet-pontusx-paratime.orc
+          sh ../.github/orc-wrap.sh init ${RUNTIME_EXECUTABLE} --output ../localnet-pontusx-paratime.orc
           popd
         env:
           RUNTIME_EXECUTABLE: ${{ github.workspace }}/${{ steps.build-debug-elf.outputs.build-path }}/pontusx-paratime
@@ -60,7 +60,7 @@ jobs:
         run: |
           go install github.com/oasisprotocol/oasis-sdk/tools/orc@latest
           pushd runtime
-          orc init ${RUNTIME_EXECUTABLE} --sgx-executable ${RUNTIME_SGXS} --output ../pontusx-paratime.orc
+          sh ../.github/orc-wrap.sh init ${RUNTIME_EXECUTABLE} --sgx-executable ${RUNTIME_SGXS} --output ../pontusx-paratime.orc
           popd
         env:
           RUNTIME_EXECUTABLE: ${{ github.workspace }}/${{ steps.build-elf.outputs.build-path }}/pontusx-paratime

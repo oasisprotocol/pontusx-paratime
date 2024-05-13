@@ -21,32 +21,46 @@ pub struct Config;
 /// The total supply of the native denomination token.
 const NATIVE_TOKEN_SUPPLY: u128 = 100_000_000 * 1_000_000_000_000_000_000;
 
-/// Determine whether the build is for Testnet.
+/// Determine whether the build is for Devnet.
 ///
-/// If the crate version has a pre-release component (e.g. 3.0.0-alpha) then the build is classified
-/// as Testnet. If there is no such component (e.g. 5.0.0) then it is classified as Mainnet.
-const fn is_testnet() -> bool {
-    !env!("CARGO_PKG_VERSION_PRE").is_empty()
+/// If the crate version has a pre-release component (e.g. 3.0.0-alpha-devnet) then the build is
+/// classified as Devnet if that pre-release component contains "devnet".
+const fn is_devnet() -> bool {
+    const_str::contains!(env!("CARGO_PKG_VERSION_PRE"), "devnet")
 }
 
-/// Determine EVM chain ID to use depending on whether the build is for Localnet, Testnet or Mainnet.
+/// Determine whether the build is for Testnet.
+///
+/// If the crate version has a pre-release component (e.g. 3.0.0-alpha-testnet) then the build is
+/// classified as Testnet if that pre-release component contains "testnet".
+const fn is_testnet() -> bool {
+    const_str::contains!(env!("CARGO_PKG_VERSION_PRE"), "testnet")
+}
+
+/// Determine EVM chain ID to use depending on whether the build is for Devnet, Testnet or Mainnet.
 const fn chain_id() -> u64 {
     if option_env!("OASIS_UNSAFE_USE_LOCALNET_CHAINID").is_some() {
         // Localnet.
         0x7ec7
+    } else if is_devnet() {
+        // Devnet.
+        0x7ec8
     } else if is_testnet() {
         // Testnet.
-        0x7ec8
+        0x7ec9
     } else {
         // Mainnet.
         panic!("runtime is not yet deployable on mainnet");
-        //0x7ec9
+        //0x7eca
     }
 }
 
 /// Determine state version on whether the build is for Testnet or Mainnet.
 const fn state_version() -> u32 {
-    if is_testnet() {
+    if is_devnet() {
+        // Devnet.
+        1
+    } else if is_testnet() {
         // Testnet.
         1
     } else {
@@ -58,7 +72,7 @@ const fn state_version() -> u32 {
 /// Determine the consensus denomination used by the runtime, depending on
 /// whether the build is for Testner or Mainnet.
 fn consensus_denomination() -> Denomination {
-    if is_testnet() {
+    if is_devnet() || is_testnet() {
         "TEST".parse().unwrap()
     } else {
         "ROSE".parse().unwrap()
@@ -147,12 +161,22 @@ impl sdk::Runtime for Runtime {
 
     #[cfg(target_env = "sgx")]
     fn consensus_trust_root() -> Option<TrustRoot> {
-        if is_testnet() {
-            // Testnet.
+        if is_devnet() {
+            // Devnet.
             Some(TrustRoot {
                 height: 19377991,
                 hash: "99ece49085f04e312e6b55674ad700b8f9d51e1bd16ade26e2de96485ae6965a".into(),
                 runtime_id: "0000000000000000000000000000000000000000000000004febe52eb412b421"
+                    .into(),
+                chain_context: "0b91b8e4e44b2003a7c5e23ddadb5e14ef5345c0ebcb3ddcae07fa2f244cab76"
+                    .to_string(),
+            })
+        } else if is_testnet() {
+            // Testnet.
+            Some(TrustRoot {
+                height: 21122646,
+                hash: "0ed6ad8bf11176d82b3f3b9c266aa63d9813c11d8add7a696f3b22b166de6549".into(),
+                runtime_id: "00000000000000000000000000000000000000000000000004a6f9071c007069"
                     .into(),
                 chain_context: "0b91b8e4e44b2003a7c5e23ddadb5e14ef5345c0ebcb3ddcae07fa2f244cab76"
                     .to_string(),
@@ -192,6 +216,7 @@ impl sdk::Runtime for Runtime {
                     max_multisig_signers: 8,
                     gas_costs: modules::core::GasCosts {
                         tx_byte: 1,
+                        storage_byte: 0,
                         auth_signature: 1_000,
                         auth_multisig_signer: 1_000,
                         callformat_x25519_deoxysii: 10_000,
