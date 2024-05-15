@@ -1,6 +1,6 @@
 [package]
 name = "pontusx-paratime"
-version = "0.0.1-testnet"
+version = "0.0.2-testnet"
 authors = ["deltaDAO <contact@delta-dao.com>"]
 edition = "2021"
 license = "Apache-2.0"
@@ -15,9 +15,9 @@ runtime-id = "00000000000000000000000000000000000000000000000004a6f9071c007069"
 runtime-id = "0000000000000000000000000000000000000000000000004febe52eb412b421"
 
 [package.metadata.fortanix-sgx]
-heap-size = 268435456 # 256 MiB
+heap-size = 536870912 # 512 MiB
 stack-size = 2097152
-threads = 8
+threads = 26
 debug = false
 
 [dependencies]
