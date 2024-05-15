@@ -2536,7 +2536,7 @@ dependencies = [
 
 [[package]]
 name = "pontusx-paratime"
-version = "0.0.1-testnet"
+version = "0.0.2-testnet"
 dependencies = [
  "const-str",
  "hex",
