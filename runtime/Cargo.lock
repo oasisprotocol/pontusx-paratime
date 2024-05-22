@@ -1617,6 +1617,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "keymanager"
+version = "0.4.1-testnet"
+source = "git+https://github.com/oasisprotocol/keymanager-paratime?tag=v0.4.1-testnet#1b20792680b245a610ee428876ca0f6ddc99a436"
+dependencies = [
+ "oasis-core-keymanager 0.0.0 (git+https://github.com/oasisprotocol/oasis-core?tag=v23.0.1)",
+ "oasis-core-runtime 0.0.0 (git+https://github.com/oasisprotocol/oasis-core?tag=v23.0.1)",
+]
+
+[[package]]
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2526,24 +2535,15 @@ dependencies = [
 ]
 
 [[package]]
-name = "pontusx-keymanager"
-version = "0.0.1-testnet"
-source = "git+https://github.com/oasisprotocol/pontusx-keymanager?tag=v0.0.1-testnet#254318390da16e03a933e873cfea47a0d673f957"
-dependencies = [
- "oasis-core-keymanager 0.0.0 (git+https://github.com/oasisprotocol/oasis-core?tag=v23.0.1)",
- "oasis-core-runtime 0.0.0 (git+https://github.com/oasisprotocol/oasis-core?tag=v23.0.1)",
-]
-
-[[package]]
 name = "pontusx-paratime"
-version = "0.0.2-testnet"
+version = "0.0.2-devnet"
 dependencies = [
  "const-str",
  "hex",
+ "keymanager",
  "oasis-runtime-sdk",
  "oasis-runtime-sdk-evm",
  "once_cell",
- "pontusx-keymanager",
 ]
 
 [[package]]
