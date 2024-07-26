@@ -1,7 +1,10 @@
 //! The Pontus-X ParaTime.
 #![deny(rust_2018_idioms, single_use_lifetimes, unreachable_pub)]
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    str::FromStr,
+};
 
 #[cfg(target_env = "sgx")]
 use oasis_runtime_sdk::core::consensus::verifier::TrustRoot;
@@ -14,6 +17,7 @@ use oasis_runtime_sdk::{
     Module, Version,
 };
 use once_cell::unsync::Lazy;
+use primitive_types::H160;
 
 /// Configuration of the various modules.
 pub struct Config;
@@ -109,6 +113,29 @@ impl module_evm::Config for Config {
     const CONFIDENTIAL: bool = true;
 }
 
+#[allow(clippy::declare_interior_mutable_const)]
+impl modules::access::Config for Config {
+    const METHOD_AUTHORIZATIONS: Lazy<modules::access::types::Authorization> = Lazy::new(|| {
+        modules::access::types::Authorization::with_filtered_methods([(
+            "evm.Create",
+            modules::access::types::MethodAuthorization::allow_from([
+                // ERC-721 factory contract.
+                Address::from_eth(
+                    H160::from_str("0xFdC4a5DEaCDfc6D82F66e894539461a269900E13")
+                        .unwrap()
+                        .as_ref(),
+                ),
+                // Main devnet deployment account.
+                Address::from_eth(
+                    H160::from_str("0x4B010D64C7b2037ea2Dabea4d303c4c24b723d00")
+                        .unwrap()
+                        .as_ref(),
+                ),
+            ]),
+        )])
+    });
+}
+
 /// The EVM ParaTime.
 pub struct Runtime;
 
@@ -142,6 +169,8 @@ impl sdk::Runtime for Runtime {
         modules::consensus_accounts::Module<modules::consensus::Module>,
         // EVM.
         module_evm::Module<Config>,
+        // Access control module.
+        modules::access::Module<Config>,
     );
 
     fn trusted_signers() -> Option<TrustedSigners> {
@@ -284,6 +313,7 @@ impl sdk::Runtime for Runtime {
                     gas_costs: module_evm::GasCosts {},
                 },
             },
+            (), // Access module.
         )
     }
 
