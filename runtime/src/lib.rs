@@ -8,7 +8,7 @@ use oasis_runtime_sdk::core::consensus::verifier::TrustRoot;
 use oasis_runtime_sdk::{
     self as sdk, config,
     core::common::crypto::signature::PublicKey,
-    keymanager::TrustedPolicySigners,
+    keymanager::TrustedSigners,
     modules,
     types::{address::Address, token::Denomination},
     Module, Version,
@@ -100,8 +100,6 @@ impl modules::core::Config for Config {
 }
 
 impl module_evm::Config for Config {
-    type Accounts = modules::accounts::Module;
-
     type AdditionalPrecompileSet = ();
 
     const CHAIN_ID: u64 = chain_id();
@@ -130,6 +128,7 @@ impl sdk::Runtime for Runtime {
     };
 
     type Core = modules::core::Module<Config>;
+    type Accounts = modules::accounts::Module;
 
     #[allow(clippy::type_complexity)]
     type Modules = (
@@ -140,20 +139,20 @@ impl sdk::Runtime for Runtime {
         // Consensus layer interface.
         modules::consensus::Module,
         // Consensus layer accounts.
-        modules::consensus_accounts::Module<modules::accounts::Module, modules::consensus::Module>,
+        modules::consensus_accounts::Module<modules::consensus::Module>,
         // EVM.
         module_evm::Module<Config>,
     );
 
-    fn trusted_policy_signers() -> Option<TrustedPolicySigners> {
+    fn trusted_signers() -> Option<TrustedSigners> {
         #[allow(clippy::partialeq_to_none)]
         if option_env!("OASIS_UNSAFE_SKIP_KM_POLICY") == Some("1") {
-            return Some(TrustedPolicySigners::default());
+            return Some(TrustedSigners::default());
         }
         let tps = keymanager::trusted_policy_signers();
         // The `keymanager` crate may use a different version of `oasis_core`
-        // so we need to convert the `TrustedPolicySigners` between the versions.
-        Some(TrustedPolicySigners {
+        // so we need to convert the `TrustedSigners` between the versions.
+        Some(TrustedSigners {
             signers: tps.signers.into_iter().map(|s| PublicKey(s.0)).collect(),
             threshold: tps.threshold,
         })
@@ -299,7 +298,7 @@ impl sdk::Runtime for Runtime {
         // Consensus layer interface.
         modules::consensus::Module::set_params(genesis.2.parameters);
         // Consensus layer accounts.
-        modules::consensus_accounts::Module::<modules::accounts::Module, modules::consensus::Module>::set_params(
+        modules::consensus_accounts::Module::<modules::consensus::Module>::set_params(
             genesis.3.parameters,
         );
         // EVM.
