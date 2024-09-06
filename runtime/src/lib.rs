@@ -1,19 +1,23 @@
 //! The Pontus-X ParaTime.
 #![deny(rust_2018_idioms, single_use_lifetimes, unreachable_pub)]
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    str::FromStr,
+};
 
 #[cfg(target_env = "sgx")]
 use oasis_runtime_sdk::core::consensus::verifier::TrustRoot;
 use oasis_runtime_sdk::{
     self as sdk, config,
     core::common::crypto::signature::PublicKey,
-    keymanager::TrustedPolicySigners,
+    keymanager::TrustedSigners,
     modules,
     types::{address::Address, token::Denomination},
     Module, Version,
 };
 use once_cell::unsync::Lazy;
+use primitive_types::H160;
 
 /// Configuration of the various modules.
 pub struct Config;
@@ -100,8 +104,6 @@ impl modules::core::Config for Config {
 }
 
 impl module_evm::Config for Config {
-    type Accounts = modules::accounts::Module;
-
     type AdditionalPrecompileSet = ();
 
     const CHAIN_ID: u64 = chain_id();
@@ -109,6 +111,29 @@ impl module_evm::Config for Config {
     const TOKEN_DENOMINATION: Denomination = Denomination::NATIVE;
 
     const CONFIDENTIAL: bool = true;
+}
+
+#[allow(clippy::declare_interior_mutable_const)]
+impl modules::access::Config for Config {
+    const METHOD_AUTHORIZATIONS: Lazy<modules::access::types::Authorization> = Lazy::new(|| {
+        modules::access::types::Authorization::with_filtered_methods([(
+            "evm.Create",
+            modules::access::types::MethodAuthorization::allow_from([
+                // ERC-721 factory contract.
+                Address::from_eth(
+                    H160::from_str("0xFdC4a5DEaCDfc6D82F66e894539461a269900E13")
+                        .unwrap()
+                        .as_ref(),
+                ),
+                // Main devnet deployment account.
+                Address::from_eth(
+                    H160::from_str("0x4B010D64C7b2037ea2Dabea4d303c4c24b723d00")
+                        .unwrap()
+                        .as_ref(),
+                ),
+            ]),
+        )])
+    });
 }
 
 /// The EVM ParaTime.
@@ -130,6 +155,7 @@ impl sdk::Runtime for Runtime {
     };
 
     type Core = modules::core::Module<Config>;
+    type Accounts = modules::accounts::Module;
 
     #[allow(clippy::type_complexity)]
     type Modules = (
@@ -140,20 +166,22 @@ impl sdk::Runtime for Runtime {
         // Consensus layer interface.
         modules::consensus::Module,
         // Consensus layer accounts.
-        modules::consensus_accounts::Module<modules::accounts::Module, modules::consensus::Module>,
+        modules::consensus_accounts::Module<modules::consensus::Module>,
         // EVM.
         module_evm::Module<Config>,
+        // Access control module.
+        modules::access::Module<Config>,
     );
 
-    fn trusted_policy_signers() -> Option<TrustedPolicySigners> {
+    fn trusted_signers() -> Option<TrustedSigners> {
         #[allow(clippy::partialeq_to_none)]
         if option_env!("OASIS_UNSAFE_SKIP_KM_POLICY") == Some("1") {
-            return Some(TrustedPolicySigners::default());
+            return Some(TrustedSigners::default());
         }
         let tps = keymanager::trusted_policy_signers();
         // The `keymanager` crate may use a different version of `oasis_core`
-        // so we need to convert the `TrustedPolicySigners` between the versions.
-        Some(TrustedPolicySigners {
+        // so we need to convert the `TrustedSigners` between the versions.
+        Some(TrustedSigners {
             signers: tps.signers.into_iter().map(|s| PublicKey(s.0)).collect(),
             threshold: tps.threshold,
         })
@@ -285,6 +313,7 @@ impl sdk::Runtime for Runtime {
                     gas_costs: module_evm::GasCosts {},
                 },
             },
+            (), // Access module.
         )
     }
 
@@ -299,7 +328,7 @@ impl sdk::Runtime for Runtime {
         // Consensus layer interface.
         modules::consensus::Module::set_params(genesis.2.parameters);
         // Consensus layer accounts.
-        modules::consensus_accounts::Module::<modules::accounts::Module, modules::consensus::Module>::set_params(
+        modules::consensus_accounts::Module::<modules::consensus::Module>::set_params(
             genesis.3.parameters,
         );
         // EVM.
