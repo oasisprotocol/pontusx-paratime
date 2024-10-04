@@ -118,20 +118,35 @@ impl modules::access::Config for Config {
     const METHOD_AUTHORIZATIONS: Lazy<modules::access::types::Authorization> = Lazy::new(|| {
         modules::access::types::Authorization::with_filtered_methods([(
             "evm.Create",
-            modules::access::types::MethodAuthorization::allow_from([
-                // ERC-721 factory contract.
-                Address::from_eth(
-                    H160::from_str("0xFdC4a5DEaCDfc6D82F66e894539461a269900E13")
-                        .unwrap()
-                        .as_ref(),
-                ),
-                // Main devnet deployment account.
-                Address::from_eth(
-                    H160::from_str("0x4B010D64C7b2037ea2Dabea4d303c4c24b723d00")
-                        .unwrap()
-                        .as_ref(),
-                ),
-            ]),
+            modules::access::types::MethodAuthorization::allow_from(
+                [
+                    // ERC-721 factory contract.
+                    Address::from_eth(
+                        H160::from_str("0xFdC4a5DEaCDfc6D82F66e894539461a269900E13")
+                            .unwrap()
+                            .as_ref(),
+                    ),
+                    // Main devnet deployment account.
+                    Address::from_eth(
+                        H160::from_str("0x4B010D64C7b2037ea2Dabea4d303c4c24b723d00")
+                            .unwrap()
+                            .as_ref(),
+                    ),
+                ]
+                .into_iter()
+                .chain(if is_devnet() || is_testnet() {
+                    Some(
+                        // Oasis Protocol Foundation.
+                        Address::from_eth(
+                            H160::from_str("0x7E13628a092637e480c7c266692381784d909069")
+                                .unwrap()
+                                .as_ref(),
+                        ),
+                    )
+                } else {
+                    None
+                }),
+            ),
         )])
     });
 }
