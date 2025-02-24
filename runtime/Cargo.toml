@@ -24,13 +24,13 @@ debug = false
 keymanager = { git = "https://github.com/oasisprotocol/keymanager-paratime", tag = "v0.4.1-testnet" }
 
 # SDK.
-module-evm = { git = "https://github.com/oasisprotocol/oasis-sdk", tag = "runtime-sdk/v0.9.6", package = "oasis-runtime-sdk-evm" }
-oasis-runtime-sdk = { git = "https://github.com/oasisprotocol/oasis-sdk", tag = "runtime-sdk/v0.9.6" }
+module-evm = { git = "https://github.com/oasisprotocol/oasis-sdk", tag = "runtime-sdk/v0.11.0", package = "oasis-runtime-sdk-evm" }
+oasis-runtime-sdk = { git = "https://github.com/oasisprotocol/oasis-sdk", tag = "runtime-sdk/v0.11.0" }
 
 # Third party.
 hex = "~0.4"
 once_cell = "1.8.0"
-const-str = { version = "0.5.7", features = ["std"] }
+const-str = { version = "0.6.2", features = ["std"] }
 primitive-types = { version = "0.12", default-features = false, features = ["rustc-hex"] }
 
 [profile.release]
