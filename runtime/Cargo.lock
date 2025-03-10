@@ -2343,34 +2343,6 @@ checksum = "5fe0d7f5a7c55eba7e8e845046c6c81332f4fa4997f0ed497b9f44db1d7f2050"
 [[package]]
 name = "oasis-core-keymanager"
 version = "0.0.0"
-source = "git+https://github.com/oasisprotocol/oasis-core?tag=runtime/v24.3-rt1#d4fa419ea80aee4b2106c8f78a12a36cdd597b5b"
-dependencies = [
- "anyhow",
- "async-trait",
- "base64 0.22.1",
- "futures",
- "group",
- "lazy_static",
- "lru 0.12.5",
- "oasis-cbor",
- "oasis-core-runtime 0.0.0 (git+https://github.com/oasisprotocol/oasis-core?tag=runtime/v24.3-rt1)",
- "p256",
- "p384",
- "rand",
- "rustc-hex",
- "secret-sharing",
- "sgx-isa",
- "sp800-185",
- "thiserror",
- "tiny-keccak 2.0.2",
- "tokio",
- "x25519-dalek",
- "zeroize",
-]
-
-[[package]]
-name = "oasis-core-keymanager"
-version = "0.0.0"
 source = "git+https://github.com/oasisprotocol/oasis-core?tag=v23.0.1#2f17c41fa3154589a4db1b4073885c3bd761be7a"
 dependencies = [
  "anyhow",
@@ -2393,64 +2365,30 @@ dependencies = [
 ]
 
 [[package]]
-name = "oasis-core-runtime"
+name = "oasis-core-keymanager"
 version = "0.0.0"
-source = "git+https://github.com/oasisprotocol/oasis-core?tag=runtime/v24.3-rt1#d4fa419ea80aee4b2106c8f78a12a36cdd597b5b"
+source = "git+https://github.com/oasisprotocol/oasis-core?tag=v25.1#5596e669c119becc2e428fe6891496c1f5ef558f"
 dependencies = [
  "anyhow",
- "arbitrary",
  "async-trait",
  "base64 0.22.1",
- "base64-serde 0.8.0",
- "bech32 0.11.0",
- "bincode",
- "bitflags 2.8.0",
- "byteorder",
- "cfg-if 1.0.0",
- "chrono",
- "crossbeam",
- "curve25519-dalek",
- "deoxysii",
- "ed25519-dalek",
  "futures",
- "hmac",
- "honggfuzz",
- "impl-trait-for-tuples",
- "intrusive-collections",
+ "group",
  "lazy_static",
- "log",
  "lru 0.12.5",
- "mbedtls 0.12.3",
- "num-bigint 0.4.6",
- "num-derive 0.4.2",
- "num-traits",
  "oasis-cbor",
- "oid-registry 0.7.1",
- "percent-encoding",
+ "oasis-core-runtime 0.0.0 (git+https://github.com/oasisprotocol/oasis-core?tag=v25.1)",
+ "p256",
+ "p384",
  "rand",
- "rsa",
  "rustc-hex",
- "serde",
- "serde_json",
+ "secret-sharing",
  "sgx-isa",
- "sha2 0.10.8",
- "slog",
- "slog-json",
- "slog-scope",
- "slog-stdlog",
- "snow",
  "sp800-185",
- "tendermint 0.39.1",
- "tendermint-light-client 0.39.1",
- "tendermint-proto 0.39.1",
- "tendermint-rpc 0.39.1",
  "thiserror",
  "tiny-keccak 2.0.2",
  "tokio",
- "tokio-retry",
  "x25519-dalek",
- "x509-parser 0.16.0",
- "yasna 0.5.2",
  "zeroize",
 ]
 
@@ -2514,9 +2452,71 @@ dependencies = [
 ]
 
 [[package]]
+name = "oasis-core-runtime"
+version = "0.0.0"
+source = "git+https://github.com/oasisprotocol/oasis-core?tag=v25.1#5596e669c119becc2e428fe6891496c1f5ef558f"
+dependencies = [
+ "anyhow",
+ "arbitrary",
+ "async-trait",
+ "base64 0.22.1",
+ "base64-serde 0.8.0",
+ "bech32 0.11.0",
+ "bincode",
+ "bitflags 2.8.0",
+ "byteorder",
+ "cfg-if 1.0.0",
+ "chrono",
+ "crossbeam",
+ "curve25519-dalek",
+ "deoxysii",
+ "ed25519-dalek",
+ "futures",
+ "hmac",
+ "honggfuzz",
+ "impl-trait-for-tuples",
+ "intrusive-collections",
+ "lazy_static",
+ "log",
+ "lru 0.12.5",
+ "mbedtls 0.12.3",
+ "num-bigint 0.4.6",
+ "num-derive 0.4.2",
+ "num-traits",
+ "oasis-cbor",
+ "oid-registry 0.7.1",
+ "percent-encoding",
+ "rand",
+ "rsa",
+ "rustc-hex",
+ "serde",
+ "serde_json",
+ "sgx-isa",
+ "sha2 0.10.8",
+ "slog",
+ "slog-json",
+ "slog-scope",
+ "slog-stdlog",
+ "snow",
+ "sp800-185",
+ "tendermint 0.39.1",
+ "tendermint-light-client 0.39.1",
+ "tendermint-proto 0.39.1",
+ "tendermint-rpc 0.39.1",
+ "thiserror",
+ "tiny-keccak 2.0.2",
+ "tokio",
+ "tokio-retry",
+ "x25519-dalek",
+ "x509-parser 0.16.0",
+ "yasna 0.5.2",
+ "zeroize",
+]
+
+[[package]]
 name = "oasis-runtime-sdk"
-version = "0.10.0"
-source = "git+https://github.com/oasisprotocol/oasis-sdk?tag=runtime-sdk/v0.11.0#4d23a00e68f2dfaf10d54f36ad0954d7d1d3574b"
+version = "0.11.0"
+source = "git+https://github.com/oasisprotocol/oasis-sdk?tag=runtime-sdk/v0.13.1#602f5620f79c4730779d9a901e95054fa1f6ab12"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2534,8 +2534,8 @@ dependencies = [
  "merlin",
  "num-traits",
  "oasis-cbor",
- "oasis-core-keymanager 0.0.0 (git+https://github.com/oasisprotocol/oasis-core?tag=runtime/v24.3-rt1)",
- "oasis-core-runtime 0.0.0 (git+https://github.com/oasisprotocol/oasis-core?tag=runtime/v24.3-rt1)",
+ "oasis-core-keymanager 0.0.0 (git+https://github.com/oasisprotocol/oasis-core?tag=v25.1)",
+ "oasis-core-runtime 0.0.0 (git+https://github.com/oasisprotocol/oasis-core?tag=v25.1)",
  "oasis-runtime-sdk-macros",
  "once_cell",
  "p256",
@@ -2557,7 +2557,7 @@ dependencies = [
 [[package]]
 name = "oasis-runtime-sdk-evm"
 version = "0.6.0"
-source = "git+https://github.com/oasisprotocol/oasis-sdk?tag=runtime-sdk/v0.11.0#4d23a00e68f2dfaf10d54f36ad0954d7d1d3574b"
+source = "git+https://github.com/oasisprotocol/oasis-sdk?tag=runtime-sdk/v0.13.1#602f5620f79c4730779d9a901e95054fa1f6ab12"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -2573,6 +2573,7 @@ dependencies = [
  "num 0.4.3",
  "oasis-cbor",
  "oasis-runtime-sdk",
+ "oasis-runtime-sdk-macros",
  "once_cell",
  "primitive-types",
  "rand_core",
@@ -2589,12 +2590,14 @@ dependencies = [
 [[package]]
 name = "oasis-runtime-sdk-macros"
 version = "0.3.0"
-source = "git+https://github.com/oasisprotocol/oasis-sdk?tag=runtime-sdk/v0.11.0#4d23a00e68f2dfaf10d54f36ad0954d7d1d3574b"
+source = "git+https://github.com/oasisprotocol/oasis-sdk?tag=runtime-sdk/v0.13.1#602f5620f79c4730779d9a901e95054fa1f6ab12"
 dependencies = [
  "darling 0.20.10",
+ "hex",
  "proc-macro2 1.0.93",
  "quote 1.0.38",
  "syn 2.0.98",
+ "tiny-keccak 2.0.2",
 ]
 
 [[package]]
@@ -2870,9 +2873,10 @@ dependencies = [
 
 [[package]]
 name = "pontusx-paratime"
-version = "0.0.5-devnet"
+version = "0.0.6-devnet"
 dependencies = [
  "const-str",
+ "evm",
  "hex",
  "keymanager",
  "oasis-runtime-sdk",
@@ -3330,7 +3334,7 @@ dependencies = [
 [[package]]
 name = "secret-sharing"
 version = "0.1.0"
-source = "git+https://github.com/oasisprotocol/oasis-core?tag=runtime/v24.3-rt1#d4fa419ea80aee4b2106c8f78a12a36cdd597b5b"
+source = "git+https://github.com/oasisprotocol/oasis-core?tag=v25.1#5596e669c119becc2e428fe6891496c1f5ef558f"
 dependencies = [
  "anyhow",
  "group",
@@ -3341,6 +3345,7 @@ dependencies = [
  "sha3",
  "subtle",
  "thiserror",
+ "zeroize",
 ]
 
 [[package]]

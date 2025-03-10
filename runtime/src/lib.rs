@@ -6,6 +6,11 @@ use std::{
     str::FromStr,
 };
 
+use evm::executor::stack::{
+    IsPrecompileResult, PrecompileFailure, PrecompileHandle, PrecompileOutput, PrecompileSet,
+};
+
+use module_evm::precompile::erc20;
 #[cfg(target_env = "sgx")]
 use oasis_runtime_sdk::core::consensus::verifier::TrustRoot;
 use oasis_runtime_sdk::{
@@ -73,13 +78,115 @@ const fn state_version() -> u32 {
     }
 }
 
+const fn consensus_denomination_symbol() -> &'static str {
+    if is_devnet() || is_testnet() {
+        "TEST"
+    } else {
+        "ROSE"
+    }
+}
+
 /// Determine the consensus denomination used by the runtime, depending on
 /// whether the build is for Testner or Mainnet.
 fn consensus_denomination() -> Denomination {
-    if is_devnet() || is_testnet() {
-        "TEST".parse().unwrap()
-    } else {
-        "ROSE".parse().unwrap()
+    consensus_denomination_symbol().parse().unwrap()
+}
+
+/// ERC-20 wrapper around the NATIVE token.
+#[derive(Default)]
+pub struct NativeTokenErc20 {}
+
+impl erc20::AccountToken for NativeTokenErc20 {
+    type Accounts = modules::accounts::Module;
+
+    const GAS_COSTS: erc20::TokenOperationCosts = erc20::TokenOperationCosts::default();
+
+    // keccak-256(RLP("pontusx-paratime/precompiles/erc20:EUROe"))[-20:]
+    const ADDRESS: H160 = H160([
+        0xaa, 0x1e, 0x08, 0x97, 0x83, 0x9c, 0x9b, 0xb9, 0x92, 0x84, 0xa0, 0xb9, 0x85, 0xc5, 0xa3,
+        0xfd, 0x3e, 0xf3, 0x1d, 0x0b,
+    ]);
+
+    const NAME: &str = "EUROe";
+    const SYMBOL: &str = "EUROe";
+    const DECIMALS: u8 = 18;
+
+    fn denomination() -> Denomination {
+        Denomination::NATIVE
+    }
+
+    fn is_minting_allowed(caller: &H160, _address: &H160) -> Result<bool, erc20::Error> {
+        Ok(caller == &H160::from_str("0x24D68bFBA0fB06ccFfD21dC3a5c0B65207Bd479a").unwrap())
+    }
+
+    fn is_burning_allowed(caller: &H160, address: &H160) -> Result<bool, erc20::Error> {
+        // Same access control as for minting.
+        Self::is_minting_allowed(caller, address)
+    }
+}
+
+/// ERC-20 wrapper around the consensus token.
+#[derive(Default)]
+pub struct ConsensusTokenErc20 {}
+
+impl erc20::AccountToken for ConsensusTokenErc20 {
+    type Accounts = modules::accounts::Module;
+
+    const GAS_COSTS: erc20::TokenOperationCosts = erc20::TokenOperationCosts::default();
+
+    // keccak-256(RLP("pontusx-paratime/precompiles/erc20:ROSE"))[-20:]
+    const ADDRESS: H160 = H160([
+        0x6d, 0xba, 0x09, 0x74, 0x95, 0xb6, 0x0f, 0xf4, 0xb6, 0x13, 0x7c, 0xa6, 0x75, 0x54, 0x4b,
+        0x0e, 0xde, 0xac, 0xaa, 0xfe,
+    ]);
+
+    const NAME: &str = consensus_denomination_symbol();
+    const SYMBOL: &str = consensus_denomination_symbol();
+    const DECIMALS: u8 = 18;
+
+    fn denomination() -> Denomination {
+        consensus_denomination()
+    }
+
+    fn is_minting_allowed(_caller: &H160, _address: &H160) -> Result<bool, erc20::Error> {
+        Ok(false)
+    }
+
+    fn is_burning_allowed(_caller: &H160, _address: &H160) -> Result<bool, erc20::Error> {
+        Ok(false)
+    }
+}
+
+pub struct ErcTokens(
+    erc20::Erc20Contract<NativeTokenErc20>,
+    erc20::Erc20Contract<ConsensusTokenErc20>,
+);
+
+impl PrecompileSet for ErcTokens {
+    fn execute(
+        &self,
+        handle: &mut impl PrecompileHandle,
+    ) -> Option<Result<PrecompileOutput, PrecompileFailure>> {
+        match self
+            .0
+            .is_precompile(handle.code_address(), handle.remaining_gas())
+        {
+            IsPrecompileResult::Answer {
+                is_precompile: true,
+                ..
+            } => self.0.execute(handle),
+            _ => self.1.execute(handle),
+        }
+    }
+
+    fn is_precompile(&self, address: H160, remaining_gas: u64) -> IsPrecompileResult {
+        match self.0.is_precompile(address, remaining_gas) {
+            result @ IsPrecompileResult::Answer {
+                is_precompile: true,
+                ..
+            } => result,
+            _ => self.1.is_precompile(address, remaining_gas),
+        }
     }
 }
 
@@ -104,13 +211,20 @@ impl modules::core::Config for Config {
 }
 
 impl module_evm::Config for Config {
-    type AdditionalPrecompileSet = ();
+    type AdditionalPrecompileSet = ErcTokens;
 
     const CHAIN_ID: u64 = chain_id();
 
     const TOKEN_DENOMINATION: Denomination = Denomination::NATIVE;
 
     const CONFIDENTIAL: bool = true;
+
+    fn additional_precompiles() -> Option<Self::AdditionalPrecompileSet> {
+        Some(ErcTokens(
+            erc20::Erc20Contract::<NativeTokenErc20>::default(),
+            erc20::Erc20Contract::<ConsensusTokenErc20>::default(),
+        ))
+    }
 }
 
 #[allow(clippy::declare_interior_mutable_const)]
