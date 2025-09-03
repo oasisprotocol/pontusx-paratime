@@ -132,6 +132,18 @@ impl modules::access::Config for Config {
                             .unwrap()
                             .as_ref(),
                     ),
+                    // AllUnity (EURAU) devnet deployment account 1.
+                    Address::from_eth(
+                        H160::from_str("0xc619bfc77c52d36bf10e1429a146a7d435504f3c")
+                            .unwrap()
+                            .as_ref(),
+                    ),
+                    // AllUnity (EURAU) devnet deployment account 2.
+                    Address::from_eth(
+                        H160::from_str("0x9E0B5856234ea825499b1741c9bEf95a02D18790")
+                            .unwrap()
+                            .as_ref(),
+                    ),
                 ]
                 .into_iter()
                 .chain(if is_devnet() || is_testnet() {
