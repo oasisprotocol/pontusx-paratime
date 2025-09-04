@@ -61,6 +61,7 @@ jobs:
           go install github.com/oasisprotocol/oasis-sdk/tools/orc@latest
           pushd runtime
           sh ../.github/orc-wrap.sh init ${RUNTIME_EXECUTABLE} --sgx-executable ${RUNTIME_SGXS} --output ../pontusx-paratime.orc
+          orc sgx-set-sig ../pontusx-paratime.orc
           popd
         env:
           RUNTIME_EXECUTABLE: ${{ github.workspace }}/${{ steps.build-elf.outputs.build-path }}/pontusx-paratime
