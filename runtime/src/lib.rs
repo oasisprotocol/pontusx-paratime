@@ -63,7 +63,7 @@ const fn chain_id() -> u64 {
 const fn state_version() -> u32 {
     if is_devnet() {
         // Devnet.
-        1
+        2
     } else if is_testnet() {
         // Testnet.
         1
@@ -116,6 +116,11 @@ impl module_evm::Config for Config {
 #[allow(clippy::declare_interior_mutable_const)]
 impl modules::access::Config for Config {
     const METHOD_AUTHORIZATIONS: Lazy<modules::access::types::Authorization> = Lazy::new(|| {
+        // Request as of 2025-10-20: no filter on devnet.
+        if is_devnet() {
+            return Default::default();
+        }
+
         modules::access::types::Authorization::with_filtered_methods([(
             "evm.Create",
             modules::access::types::MethodAuthorization::allow_from(
@@ -219,8 +224,8 @@ impl sdk::Runtime for Runtime {
         if is_devnet() {
             // Devnet.
             Some(TrustRoot {
-                height: 19377991,
-                hash: "99ece49085f04e312e6b55674ad700b8f9d51e1bd16ade26e2de96485ae6965a".into(),
+                height: 26000000,
+                hash: "5534569dea6e06477ade21466eb334b19ed18f995cce6257855d65b9e38dd860".into(),
                 runtime_id: "0000000000000000000000000000000000000000000000004febe52eb412b421"
                     .into(),
                 chain_context: "0b91b8e4e44b2003a7c5e23ddadb5e14ef5345c0ebcb3ddcae07fa2f244cab76"
@@ -328,6 +333,9 @@ impl sdk::Runtime for Runtime {
 
                         store_receipt: 20_000,
                         take_receipt: 15_000,
+
+                        delegation: 10_000,
+                        shares_to_tokens: 10_000,
                     },
                     disable_delegate: false,
                     disable_undelegate: false,
