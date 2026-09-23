@@ -63,9 +63,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.100"
+version = "1.0.104"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a23eb6b1614318a8071c9b2521f36b424b2c83db5eb3a0fead4a6c0809af6e61"
+checksum = "330a5ed07fa54e4702c9d6c4174f74427fc0ef6e214bbd677ae50a5099946470"
 
 [[package]]
 name = "arbitrary"
@@ -314,9 +314,9 @@ checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 
 [[package]]
 name = "bytes"
-version = "1.10.1"
+version = "1.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d71b6127be86fdcfddb610f7182ac57211d4b18a3e9c82eb2d17662f2227ad6a"
+checksum = "fc652a48c352aef3ea3aed32080501cf3ef6ed5da78602a020c991775b0aff04"
 dependencies = [
  "serde",
 ]
@@ -512,9 +512,9 @@ dependencies = [
 
 [[package]]
 name = "crossbeam-epoch"
-version = "0.9.18"
+version = "0.9.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5b82ac4a3c2ca9c3460964f020e1402edd5753411d7737aa39c3714ad1b5420e"
+checksum = "dc74980687109a3b14c72fd458107bf0baa1da1a1a805e178d15501ba9b86d9d"
 dependencies = [
  "crossbeam-utils",
 ]
@@ -726,12 +726,9 @@ dependencies = [
 
 [[package]]
 name = "deranged"
-version = "0.5.5"
+version = "0.5.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ececcb659e7ba858fb4f10388c250a7252eb0a27373f1a72b8748afdd248e587"
-dependencies = [
- "powerfmt",
-]
+checksum = "7cd812cc2bc1d69d4764bd80df88b4317eaef9e773c75226407d9bc0876b211c"
 
 [[package]]
 name = "derive_arbitrary"
@@ -1656,20 +1653,20 @@ dependencies = [
 
 [[package]]
 name = "keccak"
-version = "0.1.5"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ecc2af9a1119c51f12a14607e783cb977bde58bc069ff0c3da1095e635d70654"
+checksum = "cb26cec98cce3a3d96cbb7bced3c4b16e3d13f27ec56dbd62cbc8f39cfb9d653"
 dependencies = [
  "cpufeatures",
 ]
 
 [[package]]
 name = "keymanager"
-version = "0.6.0-testnet"
-source = "git+https://github.com/oasisprotocol/keymanager-paratime?tag=v0.6.0-testnet#0839f1c195773d5317793024fb71c0f6c1a70608"
+version = "0.7.0-testnet"
+source = "git+https://github.com/oasisprotocol/keymanager-paratime?tag=v0.7.0-testnet#cd66a7d56b873e6abf8959cea06f379bab4a6590"
 dependencies = [
- "oasis-core-keymanager 0.0.0 (git+https://github.com/oasisprotocol/oasis-core?tag=v25.2)",
- "oasis-core-runtime 0.0.0 (git+https://github.com/oasisprotocol/oasis-core?tag=v25.2)",
+ "oasis-core-keymanager",
+ "oasis-core-runtime",
 ]
 
 [[package]]
@@ -1747,9 +1744,9 @@ dependencies = [
 
 [[package]]
 name = "mbedtls"
-version = "0.12.5"
+version = "0.13.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "85518d7740ddc73c8d4d07b1be49a73ab2f4b7658f05ee266bf1827c2b8e801a"
+checksum = "632b09ec03d9faf449ab6d33993c30fc85584dcf550cd6e28f00b619589118dd"
 dependencies = [
  "bitflags 1.3.2",
  "byteorder",
@@ -1801,9 +1798,9 @@ checksum = "f52b00d39961fc5b2736ea853c9cc86238e165017a493d1d5c8eac6bdc4cc273"
 
 [[package]]
 name = "memmap2"
-version = "0.9.9"
+version = "0.9.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "744133e4a0e0a658e1374cf3bf8e415c4052a15a111acd372764c55b4177d490"
+checksum = "d1219ed1b7f229ee7104d281dd01d6802fe28bb6e95d292942c4daacdeb798c0"
 dependencies = [
  "libc",
 ]
@@ -1919,9 +1916,9 @@ dependencies = [
 
 [[package]]
 name = "num-conv"
-version = "0.1.0"
+version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "51d515d32fb182ee37cda2ccdcb92950d6a3c2893aa280e540671c2cd0f3b1d9"
+checksum = "521739c6d2bac4aa25192232afe6841231376b2b26d4d9fae5ecf8ca5772e441"
 
 [[package]]
 name = "num-derive"
@@ -2011,7 +2008,7 @@ checksum = "5fe0d7f5a7c55eba7e8e845046c6c81332f4fa4997f0ed497b9f44db1d7f2050"
 [[package]]
 name = "oasis-core-keymanager"
 version = "0.0.0"
-source = "git+https://github.com/oasisprotocol/oasis-core?tag=v25.2#f777f5f63a4125e2eeb2e5240666df7bc08f68b1"
+source = "git+https://github.com/oasisprotocol/oasis-core?tag=v26.1#d2bf1620e9793345045a10a0391db9bde1bb20b9"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2021,40 +2018,12 @@ dependencies = [
  "lazy_static",
  "lru",
  "oasis-cbor",
- "oasis-core-runtime 0.0.0 (git+https://github.com/oasisprotocol/oasis-core?tag=v25.2)",
+ "oasis-core-runtime",
  "p256",
  "p384",
  "rand",
  "rustc-hex",
- "secret-sharing 0.1.0 (git+https://github.com/oasisprotocol/oasis-core?tag=v25.2)",
- "sgx-isa",
- "sp800-185",
- "thiserror",
- "tiny-keccak 2.0.2",
- "tokio",
- "x25519-dalek",
- "zeroize",
-]
-
-[[package]]
-name = "oasis-core-keymanager"
-version = "0.0.0"
-source = "git+https://github.com/oasisprotocol/oasis-core?tag=v25.6#2b4cf1b6af0a6592715c4afdebcc0d9bdffb594e"
-dependencies = [
- "anyhow",
- "async-trait",
- "base64",
- "futures",
- "group",
- "lazy_static",
- "lru",
- "oasis-cbor",
- "oasis-core-runtime 0.0.0 (git+https://github.com/oasisprotocol/oasis-core?tag=v25.6)",
- "p256",
- "p384",
- "rand",
- "rustc-hex",
- "secret-sharing 0.1.0 (git+https://github.com/oasisprotocol/oasis-core?tag=v25.6)",
+ "secret-sharing",
  "sgx-isa",
  "sp800-185",
  "thiserror",
@@ -2067,69 +2036,7 @@ dependencies = [
 [[package]]
 name = "oasis-core-runtime"
 version = "0.0.0"
-source = "git+https://github.com/oasisprotocol/oasis-core?tag=v25.2#f777f5f63a4125e2eeb2e5240666df7bc08f68b1"
-dependencies = [
- "anyhow",
- "arbitrary",
- "async-trait",
- "base64",
- "base64-serde",
- "bech32",
- "bincode",
- "bitflags 2.10.0",
- "byteorder",
- "cfg-if",
- "chrono",
- "crossbeam",
- "curve25519-dalek",
- "deoxysii",
- "ed25519-dalek",
- "futures",
- "hmac",
- "honggfuzz",
- "impl-trait-for-tuples",
- "intrusive-collections",
- "lazy_static",
- "log",
- "lru",
- "mbedtls",
- "num-bigint 0.4.6",
- "num-derive",
- "num-traits",
- "oasis-cbor",
- "oid-registry",
- "percent-encoding",
- "rand",
- "rsa",
- "rustc-hex",
- "serde",
- "serde_json",
- "sgx-isa",
- "sha2 0.10.9",
- "slog",
- "slog-json",
- "slog-scope",
- "slog-stdlog",
- "snow",
- "sp800-185",
- "tendermint",
- "tendermint-light-client",
- "tendermint-proto",
- "tendermint-rpc",
- "thiserror",
- "tiny-keccak 2.0.2",
- "tokio",
- "tokio-retry",
- "x25519-dalek",
- "x509-parser",
- "yasna 0.5.2",
- "zeroize",
-]
-
-[[package]]
-name = "oasis-core-runtime"
-version = "0.0.0"
-source = "git+https://github.com/oasisprotocol/oasis-core?tag=v25.6#2b4cf1b6af0a6592715c4afdebcc0d9bdffb594e"
+source = "git+https://github.com/oasisprotocol/oasis-core?tag=v26.1#d2bf1620e9793345045a10a0391db9bde1bb20b9"
 dependencies = [
  "anyhow",
  "arbitrary",
@@ -2191,7 +2098,7 @@ dependencies = [
 [[package]]
 name = "oasis-runtime-sdk"
 version = "0.15.0"
-source = "git+https://github.com/oasisprotocol/oasis-sdk?tag=runtime-sdk%2Fv0.16.1#81f73b14b0da4eb5bdb0a137e84f2cb5722a8538"
+source = "git+https://github.com/oasisprotocol/oasis-sdk?tag=runtime-sdk%2Fv0.17.0#7dcaaf27ab71a94699b898c4d061291c8ab2671f"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2209,8 +2116,8 @@ dependencies = [
  "merlin",
  "num-traits",
  "oasis-cbor",
- "oasis-core-keymanager 0.0.0 (git+https://github.com/oasisprotocol/oasis-core?tag=v25.6)",
- "oasis-core-runtime 0.0.0 (git+https://github.com/oasisprotocol/oasis-core?tag=v25.6)",
+ "oasis-core-keymanager",
+ "oasis-core-runtime",
  "oasis-runtime-sdk-macros",
  "once_cell",
  "p256",
@@ -2232,7 +2139,7 @@ dependencies = [
 [[package]]
 name = "oasis-runtime-sdk-evm"
 version = "0.6.0"
-source = "git+https://github.com/oasisprotocol/oasis-sdk?tag=runtime-sdk%2Fv0.16.1#81f73b14b0da4eb5bdb0a137e84f2cb5722a8538"
+source = "git+https://github.com/oasisprotocol/oasis-sdk?tag=runtime-sdk%2Fv0.17.0#7dcaaf27ab71a94699b898c4d061291c8ab2671f"
 dependencies = [
  "anyhow",
  "base64",
@@ -2266,7 +2173,7 @@ dependencies = [
 [[package]]
 name = "oasis-runtime-sdk-macros"
 version = "0.3.0"
-source = "git+https://github.com/oasisprotocol/oasis-sdk?tag=runtime-sdk%2Fv0.16.1#81f73b14b0da4eb5bdb0a137e84f2cb5722a8538"
+source = "git+https://github.com/oasisprotocol/oasis-sdk?tag=runtime-sdk%2Fv0.17.0#7dcaaf27ab71a94699b898c4d061291c8ab2671f"
 dependencies = [
  "darling 0.20.11",
  "hex",
@@ -2504,7 +2411,7 @@ dependencies = [
 
 [[package]]
 name = "pontusx-paratime"
-version = "0.0.7-devnet"
+version = "0.0.8-devnet"
 dependencies = [
  "const-str",
  "hex",
@@ -2640,9 +2547,9 @@ checksum = "dc33ff2d4973d518d823d61aa239014831e521c75da58e3df4840d3f47749d09"
 
 [[package]]
 name = "rand"
-version = "0.8.5"
+version = "0.8.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "34af8d1a0e25924bc5b7c43c079c942339d8f0a8b57c39049bef581b46327404"
+checksum = "e058c7de0b26af77780c769414d6257830bb240f3c38477dbc2c16e5f54d6d4c"
 dependencies = [
  "libc",
  "rand_chacha",
@@ -2908,24 +2815,7 @@ dependencies = [
 [[package]]
 name = "secret-sharing"
 version = "0.1.0"
-source = "git+https://github.com/oasisprotocol/oasis-core?tag=v25.2#f777f5f63a4125e2eeb2e5240666df7bc08f68b1"
-dependencies = [
- "anyhow",
- "group",
- "honggfuzz",
- "p384",
- "rand",
- "rand_core",
- "sha3",
- "subtle",
- "thiserror",
- "zeroize",
-]
-
-[[package]]
-name = "secret-sharing"
-version = "0.1.0"
-source = "git+https://github.com/oasisprotocol/oasis-core?tag=v25.6#2b4cf1b6af0a6592715c4afdebcc0d9bdffb594e"
+source = "git+https://github.com/oasisprotocol/oasis-core?tag=v26.1#d2bf1620e9793345045a10a0391db9bde1bb20b9"
 dependencies = [
  "anyhow",
  "group",
@@ -3202,9 +3092,9 @@ dependencies = [
 
 [[package]]
 name = "spin"
-version = "0.9.8"
+version = "0.9.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6980e8d7511241f8acf4aebddbb1ff938df5eebe98691418c4468d0b72a96a67"
+checksum = "3763264f6b73151db08c50ff20d7d8a0b8796e021cdea7ceedad07b80155fa0e"
 
 [[package]]
 name = "spki"
@@ -3458,30 +3348,29 @@ dependencies = [
 
 [[package]]
 name = "time"
-version = "0.3.44"
+version = "0.3.55"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "91e7d9e3bb61134e77bde20dd4825b97c010155709965fedf0f49bb138e52a9d"
+checksum = "cdb87b95ec50ddfa440816d227a17b2ccbdda963a316a727fda0fc4334f7d134"
 dependencies = [
  "deranged",
- "itoa",
  "num-conv",
  "powerfmt",
- "serde",
+ "serde_core",
  "time-core",
  "time-macros",
 ]
 
 [[package]]
 name = "time-core"
-version = "0.1.6"
+version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "40868e7c1d2f0b8d73e4a8c7f0ff63af4f6d19be117e90bd73eb1d62cf831c6b"
+checksum = "9e1c906769ad99c88eaa54e728060edef082f8e358ff32030cb7c7d315e81109"
 
 [[package]]
 name = "time-macros"
-version = "0.2.24"
+version = "0.2.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "30cfb0125f12d9c277f35663a0a33f8c30190f4e4574868a330595412d34ebf3"
+checksum = "7e689342a48d2ea927c87ea50cabf8594854bf940e9310208848d680d668ed85"
 dependencies = [
  "num-conv",
  "time-core",
