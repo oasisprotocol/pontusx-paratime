@@ -1,6 +1,6 @@
 [package]
 name = "pontusx-paratime"
-version = "0.0.7-devnet"
+version = "0.0.8-devnet"
 authors = ["deltaDAO <contact@delta-dao.com>"]
 edition = "2021"
 license = "Apache-2.0"
@@ -21,17 +21,19 @@ threads = 26
 debug = false
 
 [dependencies]
-keymanager = { git = "https://github.com/oasisprotocol/keymanager-paratime", tag = "v0.6.0-testnet" }
+keymanager = { git = "https://github.com/oasisprotocol/keymanager-paratime", tag = "v0.7.0-testnet" }
 
 # SDK.
-module-evm = { git = "https://github.com/oasisprotocol/oasis-sdk", tag = "runtime-sdk/v0.16.1", package = "oasis-runtime-sdk-evm" }
-oasis-runtime-sdk = { git = "https://github.com/oasisprotocol/oasis-sdk", tag = "runtime-sdk/v0.16.1" }
+module-evm = { git = "https://github.com/oasisprotocol/oasis-sdk", tag = "runtime-sdk/v0.17.0", package = "oasis-runtime-sdk-evm" }
+oasis-runtime-sdk = { git = "https://github.com/oasisprotocol/oasis-sdk", tag = "runtime-sdk/v0.17.0" }
 
 # Third party.
 hex = "~0.4"
 once_cell = "1.8.0"
 const-str = { version = "0.5.7", features = ["std"] }
-primitive-types = { version = "0.12", default-features = false, features = ["rustc-hex"] }
+primitive-types = { version = "0.12", default-features = false, features = [
+    "rustc-hex",
+] }
 
 [profile.release]
 codegen-units = 1
